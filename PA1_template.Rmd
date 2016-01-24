@@ -8,7 +8,23 @@ output:
 
 ## Loading and preprocessing the data
 
+### Download file and load to R
 
+First we use the download.file() function to download the raw data file, then use read.table and unz
+() to load it to R.
+
+```{r echo=TRUE}
+
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip", "activity data.zip")
+
+data <- read.table(unz("activity data.zip", "activity.csv"), header=T, sep=",")
+
+
+```
+
+### Review the data
+
+Now we take a look at the data set to ensure it is consistent with our expectations.
 
 ## What is mean total number of steps taken per day?
 
