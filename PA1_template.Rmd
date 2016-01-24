@@ -51,16 +51,21 @@ median(daily_steps$total_steps, na.rm = TRUE)
 
 ## What is the average daily activity pattern?
 
-To determine the average daily step pattern, we now aggregate the data across all days, and by time-bin.  Then we can plot the averages and determine the most active time period (on average) of all of the days measured.
+To determine the average daily step pattern, we now aggregate the data across all days, and by time-bin.  Then we can plot the averages and determine the most active time period (on average) of all of the days measured.  We can then use the max() function to determine which interval averages the highest number of steps. 
+
 
 ```{r echo=TRUE}
 
 interval_avg <- aggregate(data$steps, list(data$interval), FUN=mean, na.rm=TRUE)
+names(interval_avg) <- c("Interval", "TotalSteps")
 
+plot(interval_avg, type="l", main="AVerage steps per interval", xlab="Interval", ylab="Average No. Steps")
 
+interval_avg[which(interval_avg$TotalSteps == max(interval_avg$TotalSteps)),]
 
 ```
 
+This shows that the 835 time interval on average has the most number of steps with a monthly average of `r max(interval_avg$TotalSteps)` steps.
 
 ## Imputing missing values
 

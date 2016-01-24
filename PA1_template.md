@@ -62,13 +62,13 @@ head(data)
 
 ## What is mean total number of steps taken per day?
 
-### First aggregate total steps for each day
+To determine the mean total number of steps per day, we first aggregate the daily totals using the aggregate() function and then use the daily totals to calculate the mean and the median of the daily step counts.  We can also plot the distribution of daily step count using a histogram.
 
 
 ```r
 daily_steps <- aggregate(data$steps, list(data$date), FUN=sum)
 names(daily_steps) <- c("date", "total_steps")
-hist(daily_steps$total_steps)
+hist(daily_steps$total_steps, main="Histogram of Daily Step Totals", xlab = "Daily Steps Totals")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)\
@@ -92,7 +92,29 @@ median(daily_steps$total_steps, na.rm = TRUE)
 
 ## What is the average daily activity pattern?
 
+To determine the average daily step pattern, we now aggregate the data across all days, and by time-bin.  Then we can plot the averages and determine the most active time period (on average) of all of the days measured.  We can then use the max() function to determine which interval averages the highest number of steps. 
 
+
+
+```r
+interval_avg <- aggregate(data$steps, list(data$interval), FUN=mean, na.rm=TRUE)
+names(interval_avg) <- c("Interval", "TotalSteps")
+
+plot(interval_avg, type="l", main="AVerage steps per interval", xlab="Interval", ylab="Average No. Steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)\
+
+```r
+interval_avg[which(interval_avg$TotalSteps == max(interval_avg$TotalSteps)),]
+```
+
+```
+##     Interval TotalSteps
+## 104      835   206.1698
+```
+
+This shows that the 835 time interval on average has the most number of steps with a monthly average of 206.1698113 steps.
 
 ## Imputing missing values
 
