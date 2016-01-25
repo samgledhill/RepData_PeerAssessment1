@@ -100,7 +100,7 @@ To determine the average daily step pattern, we now aggregate the data across al
 interval_avg <- aggregate(data$steps, list(data$interval), FUN=mean, na.rm=TRUE)
 names(interval_avg) <- c("Interval", "TotalSteps")
 
-plot(interval_avg, type="l", main="AVerage steps per interval", xlab="Interval", ylab="Average No. Steps")
+plot(interval_avg, type="l", main="Average steps per interval", xlab="Interval", ylab="Average No. Steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)\
@@ -118,6 +118,52 @@ This shows that the 835 time interval on average has the most number of steps wi
 
 ## Imputing missing values
 
+First we determine how many rows of the dataset contain NA values for the steps variable.  We can do this by calling the nrow() function on the subset of "data" which contains NA values in the steps column.
+
+
+```r
+nrow(data[is.na(data$steps),])
+```
+
+```
+## [1] 2304
+```
+
+This shows that there are 2304 NA values in steps variable of the data table. Furhtermore, it is clear that all of these NA values occur on individual days (and there are 8 of these (8 x 288 = 2,304!))
+
+A very simple imputation model would be to replace these values with the average number of steps per time interval into these days.  We can take the values from the interval_avg data table.  To do this, we create a new data frame called "new_data" and merge the NA values in the "data" frame into it and merge with the average steps from the "interval_avg" frame.  Then we can use rbind() to link the new average values with the existing non-NA values in the "data" frame.
+
+Once we are done, we confirm with the summary() function that we have removed the NA values and also use nrow() to double check.
+
+
+```r
+new_data <- data
+new_data <- merge(data[is.na(data$steps),],interval_avg, by.x="interval", by.y="Interval", all.x=TRUE)
+new_data <- new_data[,c(4,3,1)]
+names(new_data) <- c("steps", "date", "interval")
+new_data2 <- rbind(data[!is.na(data$steps),], new_data)
+
+summary(new_data2)
+```
+
+```
+##      steps                date          interval     
+##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
+##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
+##  Median :  0.00   2012-10-03:  288   Median :1177.5  
+##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
+##  3rd Qu.: 27.00   2012-10-05:  288   3rd Qu.:1766.2  
+##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
+##                   (Other)   :15840
+```
+
+```r
+nrow(new_data2[is.na(new_data2$steps),])
+```
+
+```
+## [1] 0
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
